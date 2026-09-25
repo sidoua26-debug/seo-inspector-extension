@@ -222,6 +222,59 @@ async function runTests() {
   console.log(`Rendered tabs in popup navigation: [${renderedTabs.join(' | ')}]`);
   assert(renderedTabs.length === 9, `Expected 9 tabs in navigation bar, found ${renderedTabs.length}`);
 
+  // Test reaching each of the 9 tabs sequentially
+  console.log('Testing reachability and click actions across all 9 tabs...');
+  const tabIds = ['overview', 'content', 'links', 'hreflangs', 'images', 'schema', 'pagespeed', 'tracking', 'issues'];
+  for (const tabId of tabIds) {
+    const tabClicked = await popupPage.evaluate((id) => {
+      const btn = document.querySelector(`nav button[data-tab-id="${id}"]`);
+      if (btn) {
+        btn.click();
+        return true;
+      }
+      return false;
+    }, tabId);
+    assert(tabClicked === true, `Tab "${tabId}" is clickable and reachable`);
+    await new Promise((r) => setTimeout(r, 100));
+  }
+
+  // Test Settings button in header
+  console.log('\nTesting Settings button and modal interactions...');
+  const settingsBtnExists = await popupPage.evaluate(() => {
+    const btn = document.querySelector('button[title*="Settings"]');
+    return !!btn;
+  });
+  assert(settingsBtnExists, 'Settings button exists in Header');
+
+  // Click Settings button
+  await popupPage.evaluate(() => {
+    const btn = document.querySelector('button[title*="Settings"]');
+    if (btn) btn.click();
+  });
+  await new Promise((r) => setTimeout(r, 200));
+
+  // Verify Settings modal is open
+  const modalOpen = await popupPage.evaluate(() => {
+    const heading = document.querySelector('h2');
+    const hasSettingsHeading = heading && heading.textContent.includes('SEO Inspector Settings');
+    const inputs = document.querySelectorAll('input[type="number"], input[type="text"]');
+    return hasSettingsHeading && inputs.length > 0;
+  });
+  assert(modalOpen, 'Settings modal opens with configurable audit thresholds and inputs');
+
+  // Close Settings modal via Close button
+  await popupPage.evaluate(() => {
+    const closeBtn = document.querySelector('button[title*="Close Settings"]');
+    if (closeBtn) closeBtn.click();
+  });
+  await new Promise((r) => setTimeout(r, 200));
+
+  const modalClosed = await popupPage.evaluate(() => {
+    return !document.querySelector('h2');
+  });
+  assert(modalClosed, 'Settings modal closes cleanly');
+
+
   // Step 5: Check that store zip exists and is valid
   console.log('\n[5/7] Checking Chrome store package (seo-inspector-store.zip)...');
   const zipPath = path.resolve('seo-inspector-store.zip');

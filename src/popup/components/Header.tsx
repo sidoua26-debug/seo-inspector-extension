@@ -1,15 +1,25 @@
 import React from 'react';
-import { RefreshCw, Download, Search, Check, Copy } from 'lucide-react';
-import { SeoInspectorData } from '../../types/seo';
+import { RefreshCw, Download, Search, Check, Copy, Settings } from 'lucide-react';
+import { SeoInspectorData, SeoInspectorSettings } from '../../types/seo';
 import { generateMarkdownReport, downloadFile } from '../../services/exportService';
 
 interface HeaderProps {
   data: SeoInspectorData | null;
   loading: boolean;
   onRefresh: () => void;
+  onOpenSettings?: () => void;
+  isSettingsOpen?: boolean;
+  settings?: SeoInspectorSettings;
 }
 
-export const Header: React.FC<HeaderProps> = ({ data, loading, onRefresh }) => {
+export const Header: React.FC<HeaderProps> = ({
+  data,
+  loading,
+  onRefresh,
+  onOpenSettings,
+  isSettingsOpen,
+  settings,
+}) => {
   const [copiedUrl, setCopiedUrl] = React.useState(false);
 
   const score = data?.healthScore ?? 0;
@@ -29,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({ data, loading, onRefresh }) => {
 
   const handleExport = () => {
     if (!data) return;
-    const md = generateMarkdownReport(data);
+    const md = generateMarkdownReport(data, settings);
     downloadFile(md, `${data.overview.domain}-seo-audit.md`, 'text/markdown');
   };
 
@@ -124,6 +134,7 @@ export const Header: React.FC<HeaderProps> = ({ data, loading, onRefresh }) => {
             onClick={onRefresh}
             disabled={loading}
             title="Re-run Diagnostics"
+            aria-label="Re-run Diagnostics"
             className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-cyan-400' : ''}`} />
@@ -133,9 +144,23 @@ export const Header: React.FC<HeaderProps> = ({ data, loading, onRefresh }) => {
             onClick={handleExport}
             disabled={!data}
             title="Export Report (Markdown)"
+            aria-label="Export Report (Markdown)"
             className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors disabled:opacity-50"
           >
             <Download className="w-3.5 h-3.5 text-slate-300" />
+          </button>
+
+          <button
+            onClick={onOpenSettings}
+            title="SEO Inspector Settings & Preferences"
+            aria-label="SEO Inspector Settings & Preferences"
+            className={`p-2 rounded-lg border transition-all ${
+              isSettingsOpen
+                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm shadow-cyan-950/60'
+                : 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border-slate-700'
+            }`}
+          >
+            <Settings className={`w-3.5 h-3.5 transition-transform duration-200 ${isSettingsOpen ? 'text-cyan-400 rotate-45' : 'text-slate-300'}`} />
           </button>
         </div>
       </div>

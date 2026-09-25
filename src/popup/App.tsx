@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { SeoInspectorData, RawSeoExtractedData, TabId } from '../types/seo';
+import React, { useEffect, useState, useRef } from 'react';
+import { SeoInspectorData, RawSeoExtractedData, TabId, SeoInspectorSettings, DEFAULT_SETTINGS } from '../types/seo';
 import { Header } from './components/Header';
 import { TabNavigation } from './components/TabNavigation';
+import { SettingsModal } from './components/SettingsModal';
 import { OverviewTab } from './components/tabs/OverviewTab';
 import { ContentTab } from './components/tabs/ContentTab';
 import { LinksTab } from './components/tabs/LinksTab';
@@ -13,17 +14,29 @@ import { GscGa4Tab } from './components/tabs/GscGa4Tab';
 import { IssuesTab } from './components/tabs/IssuesTab';
 import { getMockInspectorData } from '../services/mockData';
 import { runAuditEngine } from '../services/auditEngine';
+import { getStoredSettings, saveStoredSettings, resetStoredSettings } from '../services/settingsService';
 import { AlertCircle, Info, RefreshCw } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
   const [data, setData] = useState<SeoInspectorData | null>(null);
+  const [rawExtracted, setRawExtracted] = useState<RawSeoExtractedData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isPreviewMode, setIsPreviewMode] = useState<boolean>(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [settings, setSettings] = useState<SeoInspectorSettings>(DEFAULT_SETTINGS);
 
-  const processInspectionData = (raw: RawSeoExtractedData) => {
-    const audit = runAuditEngine(raw);
+  // Load persistent user settings on mount
+  useEffect(() => {
+    getStoredSettings().then((loaded) => {
+      setSettings(loaded);
+    });
+  }, []);
+
+  const processInspectionData = (raw: RawSeoExtractedData, activeSettings: SeoInspectorSettings = settings) => {
+    setRawExtracted(raw);
+    const audit = runAuditEngine(raw, activeSettings);
     const full: SeoInspectorData = {
       ...raw,
       issues: audit.issues,
@@ -31,6 +44,27 @@ export const App: React.FC = () => {
       scoreBreakdown: audit.scoreBreakdown,
     };
     setData(full);
+  };
+
+  const handleSaveSettings = async (newSettings: SeoInspectorSettings) => {
+    const saved = await saveStoredSettings(newSettings);
+    setSettings(saved);
+    // Recalculate audit with updated user thresholds immediately
+    if (rawExtracted) {
+      processInspectionData(rawExtracted, saved);
+    } else if (data) {
+      processInspectionData(data, saved);
+    }
+  };
+
+  const handleResetSettings = async () => {
+    const res = await resetStoredSettings();
+    setSettings(res);
+    if (rawExtracted) {
+      processInspectionData(rawExtracted, res);
+    } else if (data) {
+      processInspectionData(data, res);
+    }
   };
 
   const runDiagnostics = async () => {
@@ -57,7 +91,8 @@ export const App: React.FC = () => {
         ) {
           console.warn('[SEO Inspector] Internal browser page. Loading demo data.');
           setIsPreviewMode(true);
-          setData(getMockInspectorData());
+          const mock = getMockInspectorData();
+          processInspectionData(mock, settings);
           setLoading(false);
           return;
         }
@@ -77,43 +112,48 @@ export const App: React.FC = () => {
                 setTimeout(() => {
                   chrome.tabs.sendMessage(tab.id!, { action: 'RUN_INSPECTION' }, (retryRes) => {
                     if (retryRes && retryRes.success) {
-                      processInspectionData(retryRes.data);
+                      processInspectionData(retryRes.data, settings);
                       setIsPreviewMode(false);
                     } else {
                       console.warn('[SEO Inspector] Injection response failed, falling back to mock.');
-                      setData(getMockInspectorData());
+                      const mock = getMockInspectorData();
+                      processInspectionData(mock, settings);
                       setIsPreviewMode(true);
                     }
                     setLoading(false);
                   });
                 }, 100);
               } else {
-                setData(getMockInspectorData());
+                const mock = getMockInspectorData();
+                processInspectionData(mock, settings);
                 setIsPreviewMode(true);
                 setLoading(false);
               }
             } catch (injectErr: any) {
               console.warn('[SEO Inspector] Script injection failed:', injectErr.message);
-              setData(getMockInspectorData());
+              const mock = getMockInspectorData();
+              processInspectionData(mock, settings);
               setIsPreviewMode(true);
               setLoading(false);
             }
           } else {
-            processInspectionData(response.data);
+            processInspectionData(response.data, settings);
             setIsPreviewMode(false);
             setLoading(false);
           }
         });
       } catch (err: any) {
         console.error('[SEO Inspector] Diagnostic error:', err);
-        setData(getMockInspectorData());
+        const mock = getMockInspectorData();
+        processInspectionData(mock, settings);
         setIsPreviewMode(true);
         setLoading(false);
       }
     } else {
       // Standalone web / preview mode
       console.info('[SEO Inspector] Running outside Chrome extension environment, using rich mock data.');
-      setData(getMockInspectorData());
+      const mock = getMockInspectorData();
+      processInspectionData(mock, settings);
       setIsPreviewMode(true);
       setLoading(false);
     }
@@ -125,8 +165,15 @@ export const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full bg-slate-900 text-slate-100 select-text overflow-hidden font-sans">
-      {/* Top Header */}
-      <Header data={data} loading={loading} onRefresh={runDiagnostics} />
+      {/* Top Header with Settings button */}
+      <Header
+        data={data}
+        loading={loading}
+        onRefresh={runDiagnostics}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+        isSettingsOpen={isSettingsOpen}
+        settings={settings}
+      />
 
       {/* Preview mode notification if active */}
       {isPreviewMode && (
@@ -191,6 +238,16 @@ export const App: React.FC = () => {
           </>
         ) : null}
       </main>
+
+      {/* Settings Modal */}
+      {isSettingsOpen && (
+        <SettingsModal
+          settings={settings}
+          onSave={handleSaveSettings}
+          onReset={handleResetSettings}
+          onClose={() => setIsSettingsOpen(false)}
+        />
+      )}
     </div>
   );
 };

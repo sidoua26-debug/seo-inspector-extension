@@ -8,6 +8,7 @@ import {
   PageSpeedData,
   StructuredDataInfo,
   TrackingData,
+  SeoInspectorSettings,
 } from '../types/seo';
 
 export interface AuditEngineInput {
@@ -31,9 +32,15 @@ export interface AuditEngineResult {
   };
 }
 
-export function runAuditEngine(input: AuditEngineInput): AuditEngineResult {
+export function runAuditEngine(input: AuditEngineInput, settings?: SeoInspectorSettings): AuditEngineResult {
   const issues: AuditIssue[] = [];
   const { overview, content, links, hreflangs, images, schema, pagespeed, tracking } = input;
+
+  const minTitle = settings?.minTitleLength ?? 30;
+  const maxTitle = settings?.maxTitleLength ?? 65;
+  const minDesc = settings?.minDescLength ?? 70;
+  const maxDesc = settings?.maxDescLength ?? 160;
+  const minRatio = settings?.minTextToCodeRatio ?? 15;
 
   let deduction = 0;
 
@@ -45,29 +52,29 @@ export function runAuditEngine(input: AuditEngineInput): AuditEngineResult {
       severity: 'critical',
       title: 'Missing <title> tag',
       description: 'The page has no title tag defined.',
-      recommendation: 'Add a descriptive <title> tag between 50 and 60 characters containing your primary target keywords.',
+      recommendation: `Add a descriptive <title> tag between ${minTitle} and ${maxTitle} characters containing your primary target keywords.`,
       value: 0,
     });
     deduction += 15;
-  } else if (overview.titleLength < 30) {
+  } else if (overview.titleLength < minTitle) {
     issues.push({
       id: 'short-title',
       category: 'Overview',
       severity: 'warning',
       title: 'Title tag is too short',
-      description: `Current title is ${overview.titleLength} characters. Titles under 30 characters often underutilize search snippet real estate.`,
-      recommendation: 'Expand title to 50-60 characters with secondary keywords or brand name.',
+      description: `Current title is ${overview.titleLength} characters. Titles under ${minTitle} characters often underutilize search snippet real estate.`,
+      recommendation: `Expand title to ${minTitle}-${maxTitle} characters with secondary keywords or brand name.`,
       value: `${overview.titleLength} chars`,
     });
     deduction += 5;
-  } else if (overview.titleLength > 65) {
+  } else if (overview.titleLength > maxTitle) {
     issues.push({
       id: 'long-title',
       category: 'Overview',
       severity: 'warning',
       title: 'Title tag may truncate in search results',
-      description: `Current title is ${overview.titleLength} characters. Search engines typically truncate titles longer than 60-65 characters.`,
-      recommendation: 'Shorten title to 50-60 characters so it remains intact in SERPs.',
+      description: `Current title is ${overview.titleLength} characters. Search engines typically truncate titles longer than ${maxTitle} characters.`,
+      recommendation: `Shorten title to ${minTitle}-${maxTitle} characters so it remains intact in SERPs.`,
       value: `${overview.titleLength} chars`,
     });
     deduction += 4;
@@ -77,7 +84,7 @@ export function runAuditEngine(input: AuditEngineInput): AuditEngineResult {
       category: 'Overview',
       severity: 'pass',
       title: 'Optimal Title tag length',
-      description: `Title length is ${overview.titleLength} characters, within the recommended 30-65 character range.`,
+      description: `Title length is ${overview.titleLength} characters, within the recommended ${minTitle}-${maxTitle} character range.`,
       recommendation: 'Keep title clear and keyword-focused.',
       value: `${overview.titleLength} chars`,
     });
@@ -95,25 +102,25 @@ export function runAuditEngine(input: AuditEngineInput): AuditEngineResult {
       value: 'Missing',
     });
     deduction += 8;
-  } else if (overview.descriptionLength < 70) {
+  } else if (overview.descriptionLength < minDesc) {
     issues.push({
       id: 'short-description',
       category: 'Overview',
       severity: 'warning',
       title: 'Meta Description is too short',
-      description: `Meta description is only ${overview.descriptionLength} characters.`,
-      recommendation: 'Expand description to 120-160 characters with a clear call to action.',
+      description: `Meta description is only ${overview.descriptionLength} characters (recommended minimum: ${minDesc}).`,
+      recommendation: `Expand description to ${minDesc}-${maxDesc} characters with a clear call to action.`,
       value: `${overview.descriptionLength} chars`,
     });
     deduction += 3;
-  } else if (overview.descriptionLength > 165) {
+  } else if (overview.descriptionLength > maxDesc) {
     issues.push({
       id: 'long-description',
       category: 'Overview',
       severity: 'warning',
       title: 'Meta Description may truncate',
-      description: `Meta description is ${overview.descriptionLength} characters, which exceeds the typical 160-character desktop snippet limit.`,
-      recommendation: 'Keep meta description around 140-160 characters to avoid truncation.',
+      description: `Meta description is ${overview.descriptionLength} characters, which exceeds the calibrated limit of ${maxDesc} characters.`,
+      recommendation: `Keep meta description around ${minDesc}-${maxDesc} characters to avoid truncation.`,
       value: `${overview.descriptionLength} chars`,
     });
     deduction += 3;
@@ -123,7 +130,7 @@ export function runAuditEngine(input: AuditEngineInput): AuditEngineResult {
       category: 'Overview',
       severity: 'pass',
       title: 'Optimal Meta Description length',
-      description: `Meta description is ${overview.descriptionLength} characters, nicely sized for SERP snippets.`,
+      description: `Meta description is ${overview.descriptionLength} characters, within the recommended ${minDesc}-${maxDesc} character range.`,
       recommendation: 'Ensure your description contains an enticing proposition.',
       value: `${overview.descriptionLength} chars`,
     });
@@ -261,13 +268,13 @@ export function runAuditEngine(input: AuditEngineInput): AuditEngineResult {
     });
   }
 
-  if (content.textToCodeRatio < 10) {
+  if (content.textToCodeRatio < minRatio) {
     issues.push({
       id: 'low-text-code-ratio',
       category: 'Content',
       severity: 'warning',
       title: 'Low Text-to-HTML Code Ratio',
-      description: `Text-to-code ratio is ${content.textToCodeRatio}%. Low ratios (< 10%) can indicate excessive inline code, bloated markup, or sparse text.`,
+      description: `Text-to-code ratio is ${content.textToCodeRatio}%. Low ratios (< ${minRatio}%) can indicate excessive inline code, bloated markup, or sparse text.`,
       recommendation: 'Clean up unnecessary HTML elements, externalize inline CSS/JS, and enrich textual content.',
       value: `${content.textToCodeRatio}%`,
     });

@@ -255,3 +255,40 @@ export interface SeoInspectorData extends RawSeoExtractedData {
     pass: number;
   };
 }
+
+export interface SeoInspectorSettings {
+  minTitleLength: number;
+  maxTitleLength: number;
+  minDescLength: number;
+  maxDescLength: number;
+  minTextToCodeRatio: number;
+  maxImageSizeKb: number;
+  flagMissingAlt: boolean;
+  flagMissingDimensions: boolean;
+  strictHeadingOrder: boolean;
+  defaultExportFormat: 'markdown' | 'json';
+  auditorName: string;
+  agencyName: string;
+  includePassingChecks: boolean;
+  googlePageSpeedApiKey?: string;
+  autoInspectOnOpen: boolean;
+}
+
+export const DEFAULT_SETTINGS: SeoInspectorSettings = {
+  minTitleLength: 30,
+  maxTitleLength: 60,
+  minDescLength: 70,
+  maxDescLength: 160,
+  minTextToCodeRatio: 15,
+  maxImageSizeKb: 150,
+  flagMissingAlt: true,
+  flagMissingDimensions: true,
+  strictHeadingOrder: true,
+  defaultExportFormat: 'markdown',
+  auditorName: '',
+  agencyName: '',
+  includePassingChecks: true,
+  googlePageSpeedApiKey: '',
+  autoInspectOnOpen: true,
+};
+

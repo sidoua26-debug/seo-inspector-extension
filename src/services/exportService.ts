@@ -1,14 +1,19 @@
-import { SeoInspectorData } from '../types/seo';
+import { SeoInspectorData, SeoInspectorSettings } from '../types/seo';
 
 /**
  * Formats full SEO Inspector data into a clean, client-ready Markdown audit report
  */
-export function generateMarkdownReport(data: SeoInspectorData): string {
+export function generateMarkdownReport(data: SeoInspectorData, settings?: SeoInspectorSettings): string {
   const { overview, content, links, hreflangs, images, schema, pagespeed, tracking, issues, healthScore, scoreBreakdown } = data;
 
   const dateStr = new Date(data.timestamp).toLocaleString();
 
   let md = `# Technical SEO Audit Report: ${overview.domain}\n\n`;
+  if (settings?.agencyName || settings?.auditorName) {
+    if (settings.agencyName) md += `**Prepared by**: ${settings.agencyName}\n`;
+    if (settings.auditorName) md += `**Lead Auditor**: ${settings.auditorName}\n`;
+    md += `\n`;
+  }
   md += `- **Target URL**: [${overview.url}](${overview.url})\n`;
   md += `- **Audit Date**: ${dateStr}\n`;
   md += `- **SEO Health Score**: **${healthScore}/100**\n`;
@@ -89,7 +94,11 @@ export function generateMarkdownReport(data: SeoInspectorData): string {
   md += `- **GSC Verification**: ${tracking.gscVerificationTags.length > 0 ? '✅ Detected' : 'None'}\n\n`;
 
   md += `## 9. Consolidated Diagnostic Issues & Recommendations\n\n`;
-  issues.forEach((iss, index) => {
+  const exportIssues = settings?.includePassingChecks === false
+    ? issues.filter(i => i.severity !== 'pass')
+    : issues;
+
+  exportIssues.forEach((iss, index) => {
     const icon = iss.severity === 'critical' ? '🔴' : iss.severity === 'warning' ? '🟡' : '🟢';
     md += `### ${index + 1}. ${icon} [${iss.category}] ${iss.title}\n\n`;
     md += `- **Issue**: ${iss.description}\n`;
