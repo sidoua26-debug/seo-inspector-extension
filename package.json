@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "package": "npm run build && node scripts/package-extension.js",
-    "test": "node test-inspector.cjs"
+    "test": "node test-inspector.cjs",
+    "generate-icons": "node scripts/generate-icons.cjs",
+    "generate-promos": "node scripts/generate-promo-tiles.cjs",
+    "capture-screenshots": "node scripts/capture-seo-screenshots.cjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

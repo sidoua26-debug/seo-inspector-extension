@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Inspector — 100+ Parameter On-Page Technical Diagnostics</title>
+  <meta name="description" content="Instant client-side technical SEO inspector: Meta, Headings, Links, Hreflangs, Images, JSON-LD Schema, Performance, GSC/GA4 & Issues checklist. Free for Microsoft Edge & Google Chrome.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #06090e;
+      color: #e2e8f0;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#06090e] selection:bg-teal-500/30 selection:text-teal-200">
+  <!-- Top Announcement Bar -->
+  <div class="bg-gradient-to-r from-teal-950 via-slate-900 to-emerald-950 border-b border-teal-500/20 py-2 text-center text-xs font-semibold text-teal-300 px-4">
+    🚀 Now available on both the <strong class="text-white">Microsoft Edge Add-ons Store</strong> and <strong class="text-white">Chrome Web Store</strong> (Manifest V3)
+  </div>
+
+  <!-- Sticky Header -->
+  <header class="border-b border-slate-800/80 bg-[#080d16]/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 h-18 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-400 via-teal-600 to-emerald-600 p-0.5 shadow-lg shadow-teal-500/20">
+          <div class="w-full h-full bg-[#080d16] rounded-[10px] flex items-center justify-center">
+            <svg class="w-5 h-5 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <circle cx="11" cy="11" r="3" stroke-width="1.5" stroke-dasharray="2 2"></circle>
+            </svg>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-black text-xl tracking-tight text-white group-hover:text-teal-300 transition-colors">
+            SEO <span class="text-teal-400">Inspector</span>
+          </span>
+          <span class="text-[10px] font-mono text-slate-400 tracking-wider uppercase font-semibold">Technical On-Page Diagnostics</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-300">
+        <a href="#features" class="hover:text-white transition-colors">Features</a>
+        <a href="#tabs" class="hover:text-white transition-colors">9 Tabs</a>
+        <a href="#privacy" class="hover:text-white transition-colors">Privacy First</a>
+        <a href="privacy.html" class="hover:text-white transition-colors">Compliance</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#download" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-bold bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-slate-950 shadow-lg shadow-teal-500/25 transition-all transform active:scale-95">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path d="M0 0h11v11H0zm13 0h11v11H13zM0 13h11v11H0zm13 0h11v11H13z"/>
+          </svg>
+          <span>Get for Microsoft Edge — Free</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative pt-20 pb-16 overflow-hidden">
+    <!-- Ambient glowing backdrops -->
+    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-teal-500/15 rounded-full blur-[140px] pointer-events-none"></div>
+    <div class="absolute top-64 right-10 w-[450px] h-[450px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-teal-500/10 text-teal-300 border border-teal-500/30 mb-6">
+        <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+        Zero Latency • 100% Client-Side DOM Inspection
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.15] mb-6">
+        Instant On-Page <br class="hidden sm:inline" />
+        <span class="bg-gradient-to-r from-teal-300 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+          Technical SEO Diagnostics
+        </span>
+      </h1>
+
+      <p class="max-w-2xl mx-auto text-base sm:text-lg text-slate-300 leading-relaxed mb-10">
+        Audit 100+ critical technical parameters in real time. Validate heading hierarchy trees, hreflang cluster parity, broken links, image CLS dimensions, JSON-LD Schema.org entities, and browser navigation vitals without sending data to third-party servers.
+      </p>
+
+      <!-- Store Download Badges -->
+      <div id="download" class="flex flex-wrap items-center justify-center gap-4 mb-16">
+        <a href="#download" class="flex items-center gap-3 px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-850 border border-teal-500/40 hover:border-teal-400 shadow-xl shadow-teal-500/10 transition-all group">
+          <svg class="w-6 h-6 text-teal-400 fill-current" viewBox="0 0 24 24">
+            <path d="M0 0h11v11H0zm13 0h11v11H13zM0 13h11v11H0zm13 0h11v11H13z"/>
+          </svg>
+          <div class="text-left">
+            <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Available on</div>
+            <div class="text-sm font-extrabold text-white group-hover:text-teal-300">Microsoft Edge Add-ons</div>
+          </div>
+        </a>
+
+        <a href="#download" class="flex items-center gap-3 px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-850 border border-slate-700 hover:border-slate-500 shadow-xl transition-all group">
+          <svg class="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="4"></circle>
+            <line x1="21.17" y1="8" x2="12" y2="8"></line>
+            <line x1="3.95" y1="6.06" x2="8.54" y2="14"></line>
+            <line x1="10.88" y1="21.94" x2="15.46" y2="14"></line>
+          </svg>
+          <div class="text-left">
+            <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Available on</div>
+            <div class="text-sm font-extrabold text-white group-hover:text-emerald-300">Chrome Web Store</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Quick Stats Pills -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-6 border-t border-slate-800/80">
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-2xl font-black text-teal-400">9 Tabs</div>
+          <div class="text-xs text-slate-400 font-semibold mt-1">Specialized Diagnostic Engines</div>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-2xl font-black text-emerald-400">100+ Rules</div>
+          <div class="text-xs text-slate-400 font-semibold mt-1">Real-Time Technical Auditing</div>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-2xl font-black text-cyan-400">100% Client-Side</div>
+          <div class="text-xs text-slate-400 font-semibold mt-1">Zero Remote Telemetry</div>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="text-2xl font-black text-white">0s Latency</div>
+          <div class="text-xs text-slate-400 font-semibold mt-1">Direct In-Memory Inspection</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive 9 Tabs Feature Showcase -->
+  <section id="tabs" class="py-20 bg-[#080d16] border-y border-slate-800/80 relative">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-teal-500/10 text-teal-400 border border-teal-500/20 mb-3">
+          Comprehensive Toolset
+        </div>
+        <h2 class="text-3xl font-extrabold text-white tracking-tight">The 9 Technical Diagnostic Engines</h2>
+        <p class="text-sm text-slate-400 mt-2">Every dimension of on-page technical SEO categorized into dedicated, interactive inspection views.</p>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-2 mb-10" id="tabNavButtons">
+        <button onclick="switchTab('overview')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-teal-500/20 border-teal-400 text-teal-300 shadow-sm" data-tab-id="overview">1. Overview</button>
+        <button onclick="switchTab('content')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="content">2. Content & Headings</button>
+        <button onclick="switchTab('links')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="links">3. Links Audit</button>
+        <button onclick="switchTab('hreflangs')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="hreflangs">4. Hreflangs</button>
+        <button onclick="switchTab('images')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="images">5. Images & CLS</button>
+        <button onclick="switchTab('schema')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="schema">6. Schema.org</button>
+        <button onclick="switchTab('pagespeed')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="pagespeed">7. PageSpeed</button>
+        <button onclick="switchTab('tracking')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="tracking">8. GSC / GA4</button>
+        <button onclick="switchTab('issues')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="issues">9. Issues & Export</button>
+      </div>
+
+      <!-- Tab Content Cards -->
+      <div id="tabContentCard" class="max-w-4xl mx-auto rounded-2xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 shadow-2xl">
+        <!-- Content will be injected dynamically via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy First Section -->
+  <section id="privacy" class="py-20 relative">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="rounded-3xl bg-gradient-to-br from-teal-950/40 via-slate-900 to-slate-950 border border-teal-500/30 p-8 md:p-12 relative overflow-hidden">
+        <div class="relative z-10 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-teal-500/20 text-teal-300 border border-teal-500/30 mb-4">
+            🔒 Uncompromising Privacy
+          </div>
+          <h2 class="text-3xl font-extrabold text-white tracking-tight mb-4">
+            Auditing Without The Surveillance
+          </h2>
+          <p class="text-slate-300 leading-relaxed text-sm md:text-base mb-6">
+            Traditional cloud crawlers require uploading your internal preview links, staging URLs, or customer data to external cloud databases. <strong>SEO Inspector executes 100% inside your browser's sandboxed tab execution context.</strong>
+          </p>
+          <ul class="space-y-3 text-sm text-slate-300">
+            <li class="flex items-center gap-2.5">
+              <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <span>Zero server logging, zero data transmission, zero telemetry beacons.</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <span>Safe for local development (<code class="text-teal-300 font-mono text-xs">localhost</code>), staging environments, and password-protected intranets.</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <span>Instant client-side export to Markdown and JSON without third-party APIs.</span>
+            </li>
+          </ul>
+
+          <div class="mt-8 pt-6 border-t border-slate-800 flex items-center gap-4">
+            <a href="privacy.html" class="text-sm font-bold text-teal-400 hover:text-teal-300 flex items-center gap-1.5 transition-colors">
+              Read Our Full Privacy Policy &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-[#080d16] py-12 text-sm text-slate-400">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 font-bold">
+          SI
+        </div>
+        <div>
+          <div class="font-extrabold text-white">SEO Inspector</div>
+          <div class="text-xs text-slate-500">&copy; 2026 Alex Mercer. Open-source technical developer utility.</div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-6 text-xs font-semibold">
+        <a href="index.html" class="hover:text-white transition-colors">Home</a>
+        <a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a>
+        <a href="terms.html" class="hover:text-white transition-colors">Terms of Service</a>
+        <a href="mailto:sidoua26@gmail.com" class="text-teal-400 hover:text-teal-300 transition-colors">Contact Support (sidoua26@gmail.com)</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Interactive Tab Switcher Script -->
+  <script>
+    const tabData = {
+      overview: {
+        title: "Overview & Metadata Diagnostics",
+        badge: "Meta & Indexability",
+        desc: "Instant character gauges for Title and Meta Description tags with real-time SERP truncation warnings. Validates canonical tag parity, robots directives (index, follow, noarchive), OpenGraph tags, Twitter cards, and HTTP status codes.",
+        code: `Title (61 chars): "Modern On-Page Technical SEO: Complete Diagnostics"\nMeta Description (148 chars): "A high-velocity benchmark..."\nCanonical: https://acme.dev/blog/seo-guide (Self-Referencing)\nRobots: index, follow, max-snippet:-1\nHTTP Status: 200 OK (HTTP/2 with Active SSL)`
+      },
+      content: {
+        title: "Content & Visual Heading Tree",
+        badge: "Hierarchy & Density",
+        desc: "Visualizes the entire document heading hierarchy from H1 through H6. Flags multiple H1 roots or skipped heading levels. Calculates total word count, reading time estimates, text-to-code ratios, and 1/2/3-word keyword density tables.",
+        code: `[H1] Modern On-Page Technical SEO: Complete Diagnostics\n  ├── [H2] 1. Automated Heading & DOM Inspection\n  │     ├── [H3] DOM Depth & Critical Rendering Path\n  │     └── [H3] Semantic Tags for Assistive Technology\n  └── [H2] 2. Schema.org Entity Graph Alignment\nWords: 1,842 • Text-to-code: 24.8% • Reading Time: 7.4 min`
+      },
+      links: {
+        title: "Internal & External Links Audit",
+        badge: "Link Integrity",
+        desc: "Categorizes all anchor elements into internal vs. external links, nofollow and sponsored rel attributes, protocol security (HTTP vs. HTTPS), and identifies empty anchor texts or missing href attributes.",
+        code: `Total Links: 68\n├── Internal: 52 (76.5%)\n├── External: 16 (23.5%)\n├── Nofollow: 6\n└── Insecure HTTP: 0 (100% Secure SSL)`
+      },
+      hreflangs: {
+        title: "Hreflang & Regional Alternates",
+        badge: "International SEO",
+        desc: "Verifies international language alternates and x-default fallback tags. Confirms self-referencing hreflangs to prevent Google Search Console international targeting errors.",
+        code: `<link rel="alternate" hreflang="en" href="https://acme.dev/blog/seo-guide" />\n<link rel="alternate" hreflang="es" href="https://acme.dev/es/blog/seo-guide" />\n<link rel="alternate" hreflang="x-default" href="https://acme.dev/blog/seo-guide" />\nStatus: Self-reference verified • x-default declared`
+      },
+      images: {
+        title: "Images & Cumulative Layout Shift (CLS)",
+        badge: "Media Performance",
+        desc: "Detects missing alt text attributes for accessibility compliance and image search ranking. Audits image dimensions (width/height attributes) to eliminate Cumulative Layout Shift (CLS) during page loading.",
+        code: `Total Images: 18\n├── Alt Text Present: 17\n├── Missing Alt Text: 1 (Alert: hero-diagram.png)\n├── Dimension Attributes: 17 / 18 (1 CLS warning)\n└── Modern Formats: 14 WebP/AVIF (78%)`
+      },
+      schema: {
+        title: "JSON-LD Schema.org Validator",
+        badge: "Rich Snippets",
+        desc: "Extracts and parses all application/ld+json script blocks. Validates required Schema.org properties for Article, Product, Organization, BreadcrumbList, FAQPage, and more with expandable syntax tree.",
+        code: `@context: "https://schema.org"\n@type: "TechArticle"\nheadline: "Modern On-Page Technical SEO: Complete Diagnostics"\nauthor: { "@type": "Person", "name": "Technical Staff" }\nStatus: Valid Google Rich Result Syntax`
+      },
+      pagespeed: {
+        title: "Core Web Vitals & Navigation Timings",
+        badge: "Performance",
+        desc: "Leverages the browser's native Navigation Timing API to measure Time to First Byte (TTFB), DOM Interactive, DOM Content Loaded (DCL), and Total Load Time, with total DOM node count tracking.",
+        code: `TTFB: 108 ms (Good)\nDOM Interactive: 340 ms (Instant)\nDOM Content Loaded: 490 ms (Optimal)\nFully Loaded: 820 ms (Fast)\nDOM Tree Size: 486 Elements (< 1,500 recommended)`
+      },
+      tracking: {
+        title: "Google Analytics 4 & GTM Inspector",
+        badge: "Analytics & Tracking",
+        desc: "Sniffs active tracking containers including GA4 measurement IDs (G-XXXXXXXXXX), Google Tag Manager container IDs (GTM-XXXXXXX), and Google Search Console verification meta tags.",
+        code: `GA4 Measurement ID: G-TK89921470 (Active)\nGTM Container: GTM-ABC123XYZ (Loaded)\nGoogle Site Verification: google-verification-token-xyz (Verified)`
+      },
+      issues: {
+        title: "Automated Issues Checklist & 1-Click Export",
+        badge: "Prioritized Fixes",
+        desc: "Aggregates all findings into a prioritized checklist: Critical (Red), Warning (Amber), and Passed (Green). Generates a complete 1-click Markdown report or structured JSON export for reporting.",
+        code: `Automated SEO Health Score: 92/100 (Grade A)\n├── 1 Critical Issue: Missing image alt tag on hero graphic\n├── 2 Warnings: Title exceeds 60 characters; 1 image missing dimensions\n└── 18 Passed Checks: Canonical, H1, SSL, Robots, Schema, etc.\n[1-Click Export: Markdown Report (.md) & JSON Audit (.json)]`
+      }
+    };
+
+    function switchTab(tabId) {
+      const data = tabData[tabId];
+      if (!data) return;
+
+      // Update button styles
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab-id') === tabId) {
+          btn.className = 'tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-teal-500/20 border-teal-400 text-teal-300 shadow-sm';
+        } else {
+          btn.className = 'tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white';
+        }
+      });
+
+      // Update content
+      const card = document.getElementById('tabContentCard');
+      card.innerHTML = `
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <div>
+            <span class="inline-block px-2.5 py-1 rounded text-[11px] font-bold bg-teal-500/10 text-teal-300 border border-teal-500/30 uppercase tracking-wider mb-2 font-mono">
+              ${data.badge}
+            </span>
+            <h3 class="text-2xl font-bold text-white tracking-tight">${data.title}</h3>
+          </div>
+        </div>
+        <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-6">${data.desc}</p>
+        <div class="bg-[#06090e] border border-slate-800 rounded-xl p-4 font-mono text-xs text-teal-300 overflow-x-auto whitespace-pre-wrap leading-relaxed">
+${data.code}
+        </div>
+      `;
+    }
+
+    // Initialize with overview
+    switchTab('overview');
+  </script>
+</body>
+</html>

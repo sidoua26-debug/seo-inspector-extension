@@ -223,11 +223,40 @@ async function runTests() {
   assert(renderedTabs.length === 9, `Expected 9 tabs in navigation bar, found ${renderedTabs.length}`);
 
   // Step 5: Check that store zip exists and is valid
-  console.log('\n[5/5] Checking seo-inspector-store.zip package...');
+  console.log('\n[5/7] Checking Chrome store package (seo-inspector-store.zip)...');
   const zipPath = path.resolve('seo-inspector-store.zip');
   assert(fs.existsSync(zipPath), 'seo-inspector-store.zip exists');
   const zipStats = fs.statSync(zipPath);
-  assert(zipStats.size > 20000, `Zip size is healthy (${(zipStats.size / 1024).toFixed(1)} KB)`);
+  assert(zipStats.size > 20000, `Chrome zip size is healthy (${(zipStats.size / 1024).toFixed(1)} KB)`);
+
+  // Step 6: Check Edge store package
+  console.log('\n[6/7] Checking Microsoft Edge store package (seo-inspector-edge-store.zip)...');
+  const edgeZipPath = path.resolve('seo-inspector-edge-store.zip');
+  assert(fs.existsSync(edgeZipPath), 'seo-inspector-edge-store.zip exists');
+  const edgeZipStats = fs.statSync(edgeZipPath);
+  assert(edgeZipStats.size > 20000, `Edge zip size is healthy (${(edgeZipStats.size / 1024).toFixed(1)} KB)`);
+
+  // Step 7: Verify Brand Assets, Multi-Resolution Icons, Promo Tiles, Screenshots, and Compliance Hub
+  console.log('\n[7/7] Verifying Brand Assets, Promo Tiles, Screenshots & Landing Hub...');
+  const iconSizes = [16, 32, 48, 128, 512];
+  for (const size of iconSizes) {
+    assert(fs.existsSync(`public/icons/icon-${size}.png`), `public/icons/icon-${size}.png exists`);
+    assert(fs.existsSync(`dist/icons/icon-${size}.png`), `dist/icons/icon-${size}.png exists`);
+    assert(fs.existsSync(`store-assets/icons/icon-${size}.png`), `store-assets/icons/icon-${size}.png exists`);
+  }
+
+  assert(fs.existsSync('store-assets/seo-inspector-logo.svg'), 'store-assets/seo-inspector-logo.svg exists');
+  assert(fs.existsSync('store-assets/promo-tile-small-440x280.png'), 'store-assets/promo-tile-small-440x280.png exists');
+  assert(fs.existsSync('store-assets/promo-tile-marquee-1400x560.png'), 'store-assets/promo-tile-marquee-1400x560.png exists');
+
+  for (let s = 1; s <= 5; s++) {
+    const sFiles = fs.readdirSync('store-assets').filter((f) => f.startsWith(`screenshot-${s}-`));
+    assert(sFiles.length > 0, `Store screenshot ${s} exists (${sFiles[0]})`);
+  }
+
+  assert(fs.existsSync('landing/index.html'), 'landing/index.html exists');
+  assert(fs.existsSync('landing/privacy.html'), 'landing/privacy.html exists');
+  assert(fs.existsSync('landing/terms.html'), 'landing/terms.html exists');
 
   // Clean up
   await browser.close();

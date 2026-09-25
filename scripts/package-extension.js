@@ -4,7 +4,8 @@ import { execSync } from 'child_process';
 
 const projectDir = path.resolve();
 const distDir = path.join(projectDir, 'dist');
-const zipFile = path.join(projectDir, 'seo-inspector-store.zip');
+const chromeZip = path.join(projectDir, 'seo-inspector-store.zip');
+const edgeZip = path.join(projectDir, 'seo-inspector-edge-store.zip');
 
 if (!fs.existsSync(distDir)) {
   console.error('Error: dist directory does not exist. Run "npm run build" first.');
@@ -16,25 +17,25 @@ if (!fs.existsSync(path.join(distDir, 'manifest.json'))) {
   process.exit(1);
 }
 
-// Remove old zip if present
-if (fs.existsSync(zipFile)) {
-  fs.unlinkSync(zipFile);
+// Remove old zip packages if present
+for (const zip of [chromeZip, edgeZip]) {
+  if (fs.existsSync(zip)) {
+    fs.unlinkSync(zip);
+  }
 }
 
-console.log('Packaging extension into seo-inspector-store.zip...');
+console.log('[package-extension] Packaging Chrome Web Store distribution (seo-inspector-store.zip)...');
+execSync(`cd "${distDir}" && zip -r -9 "${chromeZip}" . -x "*.DS_Store"`, { stdio: 'inherit' });
 
-// Using zip command from within dist so files are at zip root
-execSync(`cd "${distDir}" && zip -r -9 "${zipFile}" . -x "*.DS_Store"`, { stdio: 'inherit' });
+console.log('[package-extension] Packaging Microsoft Edge Add-ons Store distribution (seo-inspector-edge-store.zip)...');
+execSync(`cp "${chromeZip}" "${edgeZip}"`, { stdio: 'inherit' });
 
-if (fs.existsSync(zipFile)) {
-  const stats = fs.statSync(zipFile);
-  console.log(`\n✅ Successfully generated seo-inspector-store.zip!`);
-  console.log(`   Path: ${zipFile}`);
+for (const zip of [chromeZip, edgeZip]) {
+  const stats = fs.statSync(zip);
+  console.log(`\n✅ Generated package: ${path.basename(zip)}`);
+  console.log(`   Path: ${zip}`);
   console.log(`   Size: ${(stats.size / 1024).toFixed(1)} KB`);
-
-  console.log('\nZip Archive Contents:');
-  execSync(`unzip -l "${zipFile}"`, { stdio: 'inherit' });
-} else {
-  console.error('Error: Failed to create zip package.');
-  process.exit(1);
 }
+
+console.log('\nVerifying Chrome store package contents:');
+execSync(`unzip -l "${chromeZip}"`, { stdio: 'inherit' });

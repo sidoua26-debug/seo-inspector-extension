@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient: Deep Slate to Dark Emerald -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070c14" />
+      <stop offset="45%" stop-color="#0a1720" />
+      <stop offset="100%" stop-color="#052822" />
+    </linearGradient>
+
+    <!-- Border Gradient: Glowing Emerald to Teal -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d9488" />
+      <stop offset="50%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#065f46" />
+    </linearGradient>
+
+    <!-- Lens Rim Gradient: Glowing Neon Cyan to Emerald -->
+    <linearGradient id="lensRim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="50%" stop-color="#14b8a6" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+
+    <!-- Handle Gradient -->
+    <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14b8a6" />
+      <stop offset="60%" stop-color="#0f766e" />
+      <stop offset="100%" stop-color="#064e3b" />
+    </linearGradient>
+
+    <!-- Translucent Glass Fill -->
+    <radialGradient id="glassFill" cx="40%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.22" />
+      <stop offset="65%" stop-color="#0d9488" stop-opacity="0.10" />
+      <stop offset="100%" stop-color="#062e28" stop-opacity="0.28" />
+    </radialGradient>
+
+    <!-- Neon Glow Filter -->
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Base Squircle Badge with Double-stroke Border -->
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="8" />
+  <rect x="36" y="36" width="440" height="440" rx="96" fill="none" stroke="#14b8a6" stroke-opacity="0.15" stroke-width="2" />
+
+  <!-- Subtle Technical Grid Lines -->
+  <g opacity="0.08" stroke="#38bdf8" stroke-width="1.5">
+    <line x1="80" y1="140" x2="432" y2="140" />
+    <line x1="80" y1="256" x2="432" y2="256" />
+    <line x1="80" y1="372" x2="432" y2="372" />
+    <line x1="140" y1="80" x2="140" y2="432" />
+    <line x1="256" y1="80" x2="256" y2="432" />
+    <line x1="372" y1="80" x2="372" y2="432" />
+  </g>
+
+  <!-- Technical Calibration Tick Marks & Crosshair Reticle -->
+  <g stroke="#14b8a6" stroke-width="2" opacity="0.35">
+    <line x1="228" y1="64" x2="228" y2="76" stroke-linecap="round" />
+    <line x1="228" y1="384" x2="228" y2="396" stroke-linecap="round" />
+    <line x1="68" y1="224" x2="80" y2="224" stroke-linecap="round" />
+    <line x1="388" y1="224" x2="400" y2="224" stroke-linecap="round" />
+    <circle cx="228" cy="224" r="144" fill="none" stroke="#22d3ee" stroke-opacity="0.12" stroke-dasharray="4 12" stroke-width="1.5" />
+  </g>
+
+  <!-- Magnifying Lens Handle (Angled at 45° to bottom-right) -->
+  <g>
+    <!-- Handle Shadow -->
+    <path d="M 314 310 L 406 402 C 418 414, 418 434, 406 446 C 394 458, 374 458, 362 446 L 270 354 Z" fill="#02080a" opacity="0.5" />
+    <!-- Handle Main Body -->
+    <path d="M 310 306 L 400 396 C 413 409, 413 429, 400 442 C 387 455, 367 455, 354 442 L 264 352 Z" fill="url(#handleGrad)" stroke="#10b981" stroke-width="3.5" />
+    <!-- Handle Grips / Technical Calibration Segments -->
+    <line x1="344" y1="362" x2="368" y2="338" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" opacity="0.75" />
+    <line x1="368" y1="386" x2="392" y2="362" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" opacity="0.75" />
+    <line x1="392" y1="410" x2="416" y2="386" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" opacity="0.75" />
+  </g>
+
+  <!-- Outer Lens Glow Rim & Glass Area (Center at 228, 224, radius 112) -->
+  <circle cx="228" cy="224" r="112" fill="url(#glassFill)" stroke="url(#lensRim)" stroke-width="14" filter="url(#softGlow)" />
+  <circle cx="228" cy="224" r="102" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="2.5" />
+
+  <!-- Glass Reflection Arc -->
+  <path d="M 148 168 A 100 100 0 0 1 280 134" fill="none" stroke="#e0f2fe" stroke-width="5" stroke-linecap="round" opacity="0.4" />
+
+  <!-- Diagnostic DOM Hierarchy Nodes Inside Lens -->
+  <g id="domHierarchy">
+    <!-- Branching Circuit Paths -->
+    <path d="M 228 160 L 176 216" fill="none" stroke="#14b8a6" stroke-width="3" stroke-linecap="round" />
+    <path d="M 228 160 L 228 220" fill="none" stroke="#22d3ee" stroke-width="3.5" stroke-linecap="round" />
+    <path d="M 228 160 L 280 216" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" />
+    
+    <path d="M 176 216 L 160 268" fill="none" stroke="#14b8a6" stroke-width="2.5" stroke-dasharray="3 3" />
+    <path d="M 228 220 L 210 274" fill="none" stroke="#22d3ee" stroke-width="2.5" />
+    <path d="M 228 220 L 246 274" fill="none" stroke="#22d3ee" stroke-width="2.5" />
+    <path d="M 280 216 L 296 268" fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="3 3" />
+
+    <!-- Root Node (Top) -->
+    <circle cx="228" cy="160" r="14" fill="#092026" stroke="#22d3ee" stroke-width="4" filter="url(#softGlow)" />
+    <circle cx="228" cy="160" r="5" fill="#38bdf8" />
+
+    <!-- Level 2: Left Child (Head / Meta) -->
+    <circle cx="176" cy="216" r="11" fill="#062322" stroke="#14b8a6" stroke-width="3" />
+    <circle cx="176" cy="216" r="4" fill="#2dd4bf" />
+
+    <!-- Level 2: Center Child (Body / Content H1) -->
+    <circle cx="228" cy="220" r="13" fill="#062624" stroke="#10b981" stroke-width="3.5" />
+    <circle cx="228" cy="220" r="5" fill="#34d399" />
+
+    <!-- Level 2: Right Child (Schema / JSON-LD) -->
+    <circle cx="280" cy="216" r="11" fill="#062322" stroke="#14b8a6" stroke-width="3" />
+    <circle cx="280" cy="216" r="4" fill="#2dd4bf" />
+
+    <!-- Level 3: Leaf Nodes (Tags, Links, Images) -->
+    <circle cx="160" cy="268" r="8" fill="#071b24" stroke="#38bdf8" stroke-width="2.5" />
+    <circle cx="210" cy="274" r="9" fill="#062923" stroke="#10b981" stroke-width="2.5" />
+    <circle cx="246" cy="274" r="9" fill="#062923" stroke="#10b981" stroke-width="2.5" />
+    <circle cx="296" cy="268" r="8" fill="#1b1c09" stroke="#fbbf24" stroke-width="2.5" />
+  </g>
+
+  <!-- Live Pulse Dot & Optical Reticle Ping in Top Right of Lens -->
+  <g>
+    <circle cx="274" cy="172" r="16" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-opacity="0.4" />
+    <circle cx="274" cy="172" r="6" fill="#22d3ee" filter="url(#softGlow)" />
+    <circle cx="274" cy="172" r="2.5" fill="#ffffff" />
+  </g>
+</svg>

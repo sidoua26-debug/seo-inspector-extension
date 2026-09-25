@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — SEO Inspector</title>
+  <meta name="description" content="Privacy Policy for SEO Inspector: 100% client-side technical SEO diagnostics with zero remote tracking or data storage.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #06090e;
+      color: #e2e8f0;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#06090e] selection:bg-teal-500/30 selection:text-teal-200">
+  <!-- Navigation Header -->
+  <header class="border-b border-slate-800/80 bg-[#080d16]/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-emerald-600 p-0.5 shadow-lg shadow-teal-500/20">
+          <div class="w-full h-full bg-slate-950 rounded-[7px] flex items-center justify-center">
+            <svg class="w-4 h-4 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+        </div>
+        <span class="font-extrabold text-lg tracking-tight text-white group-hover:text-teal-300 transition-colors">
+          SEO <span class="text-teal-400">Inspector</span>
+        </span>
+      </a>
+      <div class="flex items-center gap-4 text-sm font-semibold">
+        <a href="index.html" class="text-slate-400 hover:text-white transition-colors">Home</a>
+        <a href="terms.html" class="text-slate-400 hover:text-white transition-colors">Terms</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-4xl mx-auto px-6 py-12 md:py-16">
+    <div class="mb-10 pb-8 border-b border-slate-800">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-teal-500/10 text-teal-400 border border-teal-500/20 mb-4">
+        Store Compliance & Transparency
+      </div>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Privacy Policy</h1>
+      <p class="text-sm text-slate-400 mt-2 font-mono">Last Updated & Effective Date: September 25, 2026</p>
+    </div>
+
+    <div class="space-y-8 text-slate-300 text-sm md:text-base leading-relaxed">
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span class="text-teal-400">1.</span> Commitment to User Privacy
+        </h2>
+        <p>
+          <strong class="text-white">SEO Inspector</strong> ("we", "our", or "the extension") is a technical on-page diagnostics developer tool available for Microsoft Edge and Google Chrome. We believe that developer utilities should prioritize privacy above all else. 
+        </p>
+        <p class="p-4 rounded-xl bg-teal-950/30 border border-teal-800/40 text-teal-200">
+          <strong>Key Guarantee:</strong> SEO Inspector executes <strong>100% locally on your machine inside your browser</strong>. We do not operate remote tracking servers, do not harvest analytics, and never transmit your inspected URLs, page source, or diagnostics to any cloud infrastructure.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span class="text-teal-400">2.</span> Data Collection and Processing
+        </h2>
+        <ul class="list-disc list-inside space-y-2 pl-2 text-slate-400">
+          <li><strong class="text-slate-200">Zero Personal Data:</strong> We do not ask for or collect names, email addresses, IP addresses, browsing histories, or hardware identifiers.</li>
+          <li><strong class="text-slate-200">Local DOM Inspection:</strong> When you click the extension icon to run a diagnostic audit, the script examines the active tab's Document Object Model (DOM) strictly within local browser memory.</li>
+          <li><strong class="text-slate-200">Ephemeral Calculations:</strong> Word counts, heading tree depths, link targets, and Schema.org entities exist only while the popup is open and are discarded immediately upon closure.</li>
+        </ul>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span class="text-teal-400">3.</span> Browser Permissions Explained
+        </h2>
+        <p>
+          To perform in-depth technical audits, the extension requests the following minimum viable permissions declared in <code class="text-teal-300 font-mono text-xs bg-slate-800 px-1.5 py-0.5 rounded">manifest.json</code>:
+        </p>
+        <div class="grid gap-3 pt-2">
+          <div class="p-3.5 rounded-lg bg-slate-900 border border-slate-800">
+            <div class="font-mono text-xs font-bold text-teal-400 uppercase tracking-wider mb-1">activeTab</div>
+            <div class="text-sm text-slate-300">
+              Grants temporary permission to interact with the currently focused browser tab only when the user explicitly clicks the extension popup. It does not allow background monitoring of unrelated tabs.
+            </div>
+          </div>
+          <div class="p-3.5 rounded-lg bg-slate-900 border border-slate-800">
+            <div class="font-mono text-xs font-bold text-teal-400 uppercase tracking-wider mb-1">scripting</div>
+            <div class="text-sm text-slate-300">
+              Used to inject the lightweight DOM extraction script (<code class="text-xs font-mono text-slate-400">extractor.js</code>) into the active tab to read headings, canonical links, robots tags, and Schema.org scripts.
+            </div>
+          </div>
+          <div class="p-3.5 rounded-lg bg-slate-900 border border-slate-800">
+            <div class="font-mono text-xs font-bold text-teal-400 uppercase tracking-wider mb-1">storage</div>
+            <div class="text-sm text-slate-300">
+              Used exclusively to persist user UI preferences locally (such as active tab view or theme state). No diagnostic data or website contents are ever written to persistent remote storage.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span class="text-teal-400">4.</span> Third-Party Disclosure & Telemetry
+        </h2>
+        <p>
+          We do not sell, rent, trade, or transfer any user information to outside parties. No Google Analytics, telemetry beacons, or third-party ad networks are included in the extension build package.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span class="text-teal-400">5.</span> Data Export Features
+        </h2>
+        <p>
+          When you utilize the "Export Markdown Report" or "Export JSON Audit" buttons, the file is generated entirely within your browser client using standard Blob URLs. No data is routed through external web APIs.
+        </p>
+      </section>
+
+      <section class="space-y-3">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span class="text-teal-400">6.</span> Contact Information
+        </h2>
+        <p>
+          If you have any questions, compliance requests, or feedback regarding this Privacy Policy, please contact the developer:
+        </p>
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+          <div>
+            <div class="font-semibold text-white">Alex Mercer / Developer Team</div>
+            <div class="text-sm text-slate-400 font-mono mt-0.5">Contact Email: sidoua26@gmail.com</div>
+          </div>
+          <a href="mailto:sidoua26@gmail.com" class="px-4 py-2 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-sm font-bold transition-all">
+            Email Inquiries
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-[#080d16] py-8 text-center text-xs text-slate-500">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div>&copy; 2026 SEO Inspector. Open-source client-side developer utility.</div>
+      <div class="flex gap-4">
+        <a href="index.html" class="hover:text-slate-300">Home</a>
+        <a href="privacy.html" class="text-teal-400 font-semibold">Privacy Policy</a>
+        <a href="terms.html" class="hover:text-slate-300">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
