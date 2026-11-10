@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SEO Inspector — 100+ Parameter On-Page Technical Diagnostics</title>
-  <meta name="description" content="Instant client-side technical SEO inspector: Meta, Headings, Links, Hreflangs, Images, JSON-LD Schema, Performance, GSC/GA4 & Issues checklist. Free for Microsoft Edge & Google Chrome.">
+  <meta name="description" content="Instant client-side technical SEO inspector: Meta, Headings, Links, Hreflangs, Images, JSON-LD Schema, Performance, GSC/GA4 &amp; Issues checklist. Free for Microsoft Edge (Manifest V3).">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
 <body class="min-h-screen flex flex-col bg-[#06090e] selection:bg-teal-500/30 selection:text-teal-200">
   <!-- Top Announcement Bar -->
   <div class="bg-gradient-to-r from-teal-950 via-slate-900 to-emerald-950 border-b border-teal-500/20 py-2 text-center text-xs font-semibold text-teal-300 px-4">
-    🚀 Now available on both the <strong class="text-white">Microsoft Edge Add-ons Store</strong> and <strong class="text-white">Chrome Web Store</strong> (Manifest V3)
+    🚀 Now available on the <strong class="text-white">Microsoft Edge Add-ons Store</strong> (Manifest V3)
   </div>
 
   <!-- Sticky Header -->
@@ -55,7 +55,7 @@
       </nav>
 
       <div class="flex items-center gap-3">
-        <a href="#download" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-bold bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-slate-950 shadow-lg shadow-teal-500/25 transition-all transform active:scale-95">
+        <a href="https://microsoftedge.microsoft.com/addons/detail/jbnjjkfkcmfkjamakndojbkjanijlfmd" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-bold bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-slate-950 shadow-lg shadow-teal-500/25 transition-all transform active:scale-95">
           <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
             <path d="M0 0h11v11H0zm13 0h11v11H13zM0 13h11v11H0zm13 0h11v11H13z"/>
           </svg>
@@ -90,27 +90,13 @@
 
       <!-- Store Download Badges -->
       <div id="download" class="flex flex-wrap items-center justify-center gap-4 mb-16">
-        <a href="#download" class="flex items-center gap-3 px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-850 border border-teal-500/40 hover:border-teal-400 shadow-xl shadow-teal-500/10 transition-all group">
+        <a href="https://microsoftedge.microsoft.com/addons/detail/jbnjjkfkcmfkjamakndojbkjanijlfmd" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-850 border border-teal-500/40 hover:border-teal-400 shadow-xl shadow-teal-500/10 transition-all group">
           <svg class="w-6 h-6 text-teal-400 fill-current" viewBox="0 0 24 24">
             <path d="M0 0h11v11H0zm13 0h11v11H13zM0 13h11v11H0zm13 0h11v11H13z"/>
           </svg>
           <div class="text-left">
-            <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Available on</div>
+            <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Published on</div>
             <div class="text-sm font-extrabold text-white group-hover:text-teal-300">Microsoft Edge Add-ons</div>
-          </div>
-        </a>
-
-        <a href="#download" class="flex items-center gap-3 px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-850 border border-slate-700 hover:border-slate-500 shadow-xl transition-all group">
-          <svg class="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <circle cx="12" cy="12" r="4"></circle>
-            <line x1="21.17" y1="8" x2="12" y2="8"></line>
-            <line x1="3.95" y1="6.06" x2="8.54" y2="14"></line>
-            <line x1="10.88" y1="21.94" x2="15.46" y2="14"></line>
-          </svg>
-          <div class="text-left">
-            <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Available on</div>
-            <div class="text-sm font-extrabold text-white group-hover:text-emerald-300">Chrome Web Store</div>
           </div>
         </a>
       </div>
@@ -154,8 +140,8 @@
         <button onclick="switchTab('content')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="content">2. Content & Headings</button>
         <button onclick="switchTab('links')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="links">3. Links Audit</button>
         <button onclick="switchTab('hreflangs')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="hreflangs">4. Hreflangs</button>
-        <button onclick="switchTab('images')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="images">5. Images & CLS</button>
-        <button onclick="switchTab('schema')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="schema">6. Schema.org</button>
+        <button onclick="switchTab('images')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="images">5. Images &amp; CLS</button>
+        <button onclick="switchTab('schema')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="schema">6. JSON-LD Inspection</button>
         <button onclick="switchTab('pagespeed')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="pagespeed">7. PageSpeed</button>
         <button onclick="switchTab('tracking')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="tracking">8. GSC / GA4</button>
         <button onclick="switchTab('issues')" class="tab-btn px-4 py-2 rounded-lg text-xs font-bold border transition-all bg-slate-900 border-slate-800 text-slate-400 hover:text-white" data-tab-id="issues">9. Issues & Export</button>
@@ -263,10 +249,10 @@
         code: `Total Images: 18\n├── Alt Text Present: 17\n├── Missing Alt Text: 1 (Alert: hero-diagram.png)\n├── Dimension Attributes: 17 / 18 (1 CLS warning)\n└── Modern Formats: 14 WebP/AVIF (78%)`
       },
       schema: {
-        title: "JSON-LD Schema.org Validator",
-        badge: "Rich Snippets",
-        desc: "Extracts and parses all application/ld+json script blocks. Validates required Schema.org properties for Article, Product, Organization, BreadcrumbList, FAQPage, and more with expandable syntax tree.",
-        code: `@context: "https://schema.org"\n@type: "TechArticle"\nheadline: "Modern On-Page Technical SEO: Complete Diagnostics"\nauthor: { "@type": "Person", "name": "Technical Staff" }\nStatus: Valid Google Rich Result Syntax`
+        title: "JSON-LD Inspection & Structured Data",
+        badge: "Structured Data",
+        desc: "Extracts and parses in-page application/ld+json script blocks, checks JSON syntax, and detects declared schema types with expandable syntax trees. Microdata items are counted separately.",
+        code: `@context: "https://schema.org"\n@type: "TechArticle"\nheadline: "Modern On-Page Technical SEO: Complete Diagnostics"\nauthor: { "@type": "Person", "name": "Technical Staff" }\nStatus: Valid JSON-LD Syntax (Successfully Parsed)`
       },
       pagespeed: {
         title: "Core Web Vitals & Navigation Timings",

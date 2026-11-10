@@ -57,7 +57,7 @@
           <span class="text-teal-400">1.</span> Commitment to User Privacy
         </h2>
         <p>
-          <strong class="text-white">SEO Inspector</strong> ("we", "our", or "the extension") is a technical on-page diagnostics developer tool available for Microsoft Edge and Google Chrome. We believe developer utilities should prioritize transparency and privacy.
+          <strong class="text-white">SEO Inspector</strong> ("we", "our", or "the extension") is a technical on-page diagnostics developer tool available for Microsoft Edge. We believe developer utilities should prioritize transparency and privacy.
         </p>
         <p class="p-4 rounded-xl bg-teal-950/30 border border-teal-800/40 text-teal-200">
           <strong>Key Guarantee:</strong> SEO Inspector does not operate remote analytics servers, tracking infrastructure, or developer-controlled backends. Active page diagnostics and DOM inspections run directly inside your local browser memory without transmitting your inspected URLs, HTML page source, or audit findings to the developer.
@@ -117,7 +117,7 @@
             <strong class="text-slate-200">No Developer Telemetry:</strong> We do not operate remote tracking servers, sell user data, or harvest analytics. No Google Analytics, telemetry beacons, or third-party ad networks are included in the extension build package.
           </p>
           <p>
-            <strong class="text-slate-200">Optional External Audit Links (Google PageSpeed Insights &amp; Schema.org):</strong> The extension includes optional external inspection buttons, such as "Open in Google PageSpeed Insights" in the PageSpeed tab, and external validator links in the Structured Data tab. Clicking these links opens external third-party testing services in a new tab (<code class="text-xs font-mono text-slate-400">https://pagespeed.web.dev/analysis?url=...</code>, Google Rich Results Test, or Schema.org Validator). If you choose to click these links, the active page URL is shared with the external service in the query string of the opened tab, governed by Google's or Schema.org's respective privacy policies. The extension never automatically opens external links or transmits URLs in the background.
+            <strong class="text-slate-200">Optional External Testing Actions (Google PageSpeed Insights, Google Rich Results &amp; Schema.org):</strong> The extension includes optional, user-initiated external inspection actions from the PageSpeed and Structured Data tabs. Clicking these links opens third-party testing services in a new browser tab: Google PageSpeed Insights (<code class="text-xs font-mono text-slate-400">https://pagespeed.web.dev/analysis?url=...</code>) and Google Rich Results Test (<code class="text-xs font-mono text-slate-400">https://search.google.com/test/rich-results?url=...</code>) pass the active page URL via a query parameter (<code class="text-xs font-mono text-slate-400">?url=...</code>), whereas the Schema.org Validator (<code class="text-xs font-mono text-slate-400">https://validator.schema.org/#url=...</code>) passes the active page URL via a URL fragment (<code class="text-xs font-mono text-slate-400">#url=...</code>). These user-initiated external actions are governed under Google's and Schema.org's respective privacy policies, and are distinct from local in-memory DOM inspection and browser preference synchronization (<code>chrome.storage.sync</code>). The extension never automatically opens external links or transmits URLs in the background.
           </p>
         </div>
       </section>
