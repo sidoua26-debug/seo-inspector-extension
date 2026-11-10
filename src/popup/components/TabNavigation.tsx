@@ -54,7 +54,7 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({
     { id: 'hreflangs', label: 'Hreflangs', icon: Globe, description: 'Language targeting & x-default checks' },
     { id: 'images', label: 'Images', icon: ImageIcon, description: 'Alt tags, dimensions & broken images' },
     { id: 'schema', label: 'Structured Data', shortLabel: 'Schema', icon: Code2, description: 'JSON-LD Schema.org extraction' },
-    { id: 'pagespeed', label: 'PageSpeed', shortLabel: 'Speed', icon: Zap, description: 'Core Web Vitals & timing' },
+    { id: 'pagespeed', label: 'PageSpeed', shortLabel: 'Speed', icon: Zap, description: 'Navigation Timing & performance' },
     { id: 'tracking', label: 'GSC/GA4', icon: BarChart3, description: 'Analytics, GTM & verification tags' },
     { id: 'issues', label: 'Issues', icon: AlertTriangle, badge: totalIssueAlerts, description: 'Critical, warning & passed checklist' },
   ];

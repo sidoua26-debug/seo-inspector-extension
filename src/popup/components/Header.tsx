@@ -63,7 +63,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-1.5">
               <span className="font-bold text-slate-100 text-xs tracking-tight">SEO Inspector</span>
               <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-semibold">
-                v1.0
+                v1.0.1
               </span>
             </div>
 

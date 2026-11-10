@@ -692,25 +692,55 @@ function extractSchema(): StructuredDataInfo {
  * Extracts Navigation & Resource Timing for PageSpeed tab
  */
 function extractPageSpeed(): PageSpeedData {
-  let ttfb = 0;
-  let dnsTime = 0;
-  let tcpTime = 0;
-  let tlsTime = 0;
-  let domInteractive = 0;
-  let domContentLoaded = 0;
-  let loadTime = 0;
+  let ttfb = -1;
+  let dnsTime = -1;
+  let tcpTime = -1;
+  let tlsTime = -1;
+  let domInteractive = -1;
+  let domContentLoaded = -1;
+  let loadTime = -1;
 
   try {
     const navEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
     if (navEntries && navEntries.length > 0) {
       const nav = navEntries[0];
-      ttfb = Math.round(nav.responseStart - nav.requestStart);
-      dnsTime = Math.round(nav.domainLookupEnd - nav.domainLookupStart);
-      tcpTime = Math.round(nav.connectEnd - nav.connectStart);
-      tlsTime = nav.secureConnectionStart > 0 ? Math.round(nav.connectEnd - nav.secureConnectionStart) : 0;
-      domInteractive = Math.round(nav.domInteractive);
-      domContentLoaded = Math.round(nav.domContentLoadedEventEnd - nav.startTime);
-      loadTime = Math.round(nav.loadEventEnd - nav.startTime);
+      // TTFB: Navigation TTFB per Google standard is responseStart - startTime
+      // Valid when responseStart > 0 and >= startTime (startTime is normally 0)
+      if (nav.responseStart > 0 && nav.responseStart >= nav.startTime) {
+        ttfb = Math.max(0, Math.round(nav.responseStart - nav.startTime));
+      } else {
+        ttfb = -1;
+      }
+
+      if (nav.domainLookupEnd >= nav.domainLookupStart && nav.domainLookupStart > 0) {
+        dnsTime = Math.round(nav.domainLookupEnd - nav.domainLookupStart);
+      } else if (nav.domainLookupStart === 0 && nav.connectStart > 0) {
+        dnsTime = 0; // Reused connection / socket cache
+      }
+
+      if (nav.connectEnd >= nav.connectStart && nav.connectStart > 0) {
+        tcpTime = Math.round(nav.connectEnd - nav.connectStart);
+      } else if (nav.connectStart === 0 && nav.requestStart > 0) {
+        tcpTime = 0; // Persistent connection
+      }
+
+      if (nav.secureConnectionStart > 0 && nav.connectEnd >= nav.secureConnectionStart) {
+        tlsTime = Math.round(nav.connectEnd - nav.secureConnectionStart);
+      } else if (window.location.protocol === 'https:' && nav.connectStart === 0) {
+        tlsTime = 0; // Reused HTTPS connection
+      } else {
+        tlsTime = 0;
+      }
+
+      if (nav.domInteractive > 0) {
+        domInteractive = Math.round(nav.domInteractive);
+      }
+      if (nav.domContentLoadedEventEnd > 0) {
+        domContentLoaded = Math.round(nav.domContentLoadedEventEnd - nav.startTime);
+      }
+      if (nav.loadEventEnd > 0) {
+        loadTime = Math.round(nav.loadEventEnd - nav.startTime);
+      }
     }
   } catch (e) {}
 
@@ -758,13 +788,13 @@ function extractPageSpeed(): PageSpeedData {
   }));
 
   return {
-    ttfb: Math.max(0, ttfb),
-    dnsTime: Math.max(0, dnsTime),
-    tcpTime: Math.max(0, tcpTime),
-    tlsTime: Math.max(0, tlsTime),
-    domInteractive: Math.max(0, domInteractive),
-    domContentLoaded: Math.max(0, domContentLoaded),
-    loadTime: Math.max(0, loadTime),
+    ttfb,
+    dnsTime,
+    tcpTime,
+    tlsTime,
+    domInteractive,
+    domContentLoaded,
+    loadTime,
     totalResources: resources.length,
     totalTransferSizeKb: Number((totalTransferBytes / 1024).toFixed(1)),
     resourceBreakdown,

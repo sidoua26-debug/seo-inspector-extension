@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SEO Inspector - On-Page Technical Diagnostics",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Instant on-page technical SEO inspector: Meta, Headings, Links, Hreflangs, Images, JSON-LD Schema, Performance & Issues.",
   "permissions": [
     "activeTab",

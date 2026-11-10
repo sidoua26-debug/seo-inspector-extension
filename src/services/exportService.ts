@@ -82,11 +82,11 @@ export function generateMarkdownReport(data: SeoInspectorData, settings?: SeoIns
   md += `- **Detected Types**: ${schema.detectedTypes.length > 0 ? schema.detectedTypes.join(', ') : 'None'}\n`;
   md += `- **Microdata Items**: ${schema.microdataCount}\n\n`;
 
-  md += `## 7. Performance & Web Vitals (Navigation API)\n\n`;
-  md += `- **TTFB (Time to First Byte)**: ${pagespeed.ttfb} ms\n`;
-  md += `- **DOM Content Loaded**: ${pagespeed.domContentLoaded} ms\n`;
-  md += `- **Full Page Load Time**: ${pagespeed.loadTime} ms\n`;
-  md += `- **Total Resources**: ${pagespeed.totalResources} (${pagespeed.totalTransferSizeKb} KB transfer)\n\n`;
+  md += `## 7. Performance & Navigation Timings (Browser API)\n\n`;
+  md += `- **TTFB (Time to First Byte)**: ${pagespeed.ttfb >= 0 ? `${pagespeed.ttfb} ms` : 'Unavailable'}\n`;
+  md += `- **DOM Content Loaded**: ${pagespeed.domContentLoaded >= 0 ? `${pagespeed.domContentLoaded} ms` : 'Unavailable'}\n`;
+  md += `- **Full Page Load Time**: ${pagespeed.loadTime >= 0 ? `${pagespeed.loadTime} ms` : 'Unavailable'}\n`;
+  md += `- **Total Resources**: ${pagespeed.totalResources} (${pagespeed.totalTransferSizeKb >= 0 ? `${pagespeed.totalTransferSizeKb} KB` : 'Unavailable'} transfer)\n\n`;
 
   md += `## 8. Analytics & Tracking\n\n`;
   md += `- **GA4 IDs**: ${tracking.ga4Ids.length > 0 ? tracking.ga4Ids.join(', ') : 'None'}\n`;

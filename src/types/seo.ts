@@ -217,7 +217,8 @@ export interface PageSpeedData {
     count: number;
     sizeKb: number;
   }>;
-  coreWebVitals: {
+  /** Deprecated: Core Web Vitals (LCP, INP, CLS) are not collected locally by Navigation Timing */
+  coreWebVitals?: {
     lcp?: number;
     cls?: number;
     fcp?: number;

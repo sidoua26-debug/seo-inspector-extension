@@ -13,7 +13,8 @@ export const PageSpeedTab: React.FC<PageSpeedTabProps> = ({ pagespeed, url }) =>
   const psiUrl = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(url)}`;
 
   const getTtfbStatus = (ttfb: number) => {
-    if (ttfb <= 0) return { label: 'Cached', variant: 'pass' as const };
+    if (ttfb < 0) return { label: 'Unavailable', variant: 'neutral' as const };
+    if (ttfb === 0) return { label: '0 ms', variant: 'neutral' as const };
     if (ttfb < 300) return { label: 'Fast (<300ms)', variant: 'pass' as const };
     if (ttfb < 800) return { label: 'Average', variant: 'warning' as const };
     return { label: 'Slow (>800ms)', variant: 'critical' as const };
@@ -21,30 +22,43 @@ export const PageSpeedTab: React.FC<PageSpeedTabProps> = ({ pagespeed, url }) =>
 
   const ttfbStatus = getTtfbStatus(pagespeed.ttfb);
 
+  const formatTiming = (val: number) => {
+    if (val < 0) return 'Unavailable';
+    return `${val} ms`;
+  };
+
   return (
     <div className="space-y-3 pb-3">
       {/* Metric Cards */}
       <div className="grid grid-cols-3 gap-2">
         <div className="bg-slate-800/90 border border-slate-700/80 rounded-xl p-2.5 flex items-center gap-2.5">
-          <div className={`p-2 rounded-lg ${ttfbStatus.variant === 'pass' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
+          <div className={`p-2 rounded-lg ${
+            ttfbStatus.variant === 'pass'
+              ? 'bg-emerald-500/10 text-emerald-400'
+              : ttfbStatus.variant === 'warning'
+              ? 'bg-amber-500/10 text-amber-400'
+              : ttfbStatus.variant === 'critical'
+              ? 'bg-rose-500/10 text-rose-400'
+              : 'bg-slate-700/40 text-slate-400'
+          }`}>
             <Server className="w-4 h-4" />
           </div>
           <div className="min-w-0">
             <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">TTFB</div>
             <div className="text-sm font-semibold text-slate-100 font-mono">
-              {pagespeed.ttfb > 0 ? `${pagespeed.ttfb} ms` : 'Cached'}
+              {pagespeed.ttfb >= 0 ? `${pagespeed.ttfb} ms` : 'Unavailable'}
             </div>
           </div>
         </div>
 
         <div className="bg-slate-800/90 border border-slate-700/80 rounded-xl p-2.5 flex items-center gap-2.5">
-          <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
+          <div className={`p-2 rounded-lg ${pagespeed.domContentLoaded >= 0 ? 'bg-cyan-500/10 text-cyan-400' : 'bg-slate-700/40 text-slate-400'}`}>
             <Clock className="w-4 h-4" />
           </div>
           <div className="min-w-0">
             <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">DOM Ready</div>
             <div className="text-sm font-semibold text-slate-100 font-mono">
-              {pagespeed.domContentLoaded > 0 ? `${pagespeed.domContentLoaded} ms` : 'N/A'}
+              {pagespeed.domContentLoaded >= 0 ? `${pagespeed.domContentLoaded} ms` : 'Unavailable'}
             </div>
           </div>
         </div>
@@ -56,7 +70,7 @@ export const PageSpeedTab: React.FC<PageSpeedTabProps> = ({ pagespeed, url }) =>
           <div className="min-w-0">
             <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Transfer Size</div>
             <div className="text-sm font-semibold text-slate-100 font-mono">
-              {pagespeed.totalTransferSizeKb > 0 ? `${pagespeed.totalTransferSizeKb} KB` : 'N/A'}
+              {pagespeed.totalTransferSizeKb > 0 ? `${pagespeed.totalTransferSizeKb} KB` : '0 KB*'}
             </div>
           </div>
         </div>
@@ -70,7 +84,7 @@ export const PageSpeedTab: React.FC<PageSpeedTabProps> = ({ pagespeed, url }) =>
         className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-cyan-500/30 hover:border-cyan-500/60 text-cyan-300 text-xs font-semibold shadow-sm transition-all"
       >
         <Zap className="w-4 h-4 text-cyan-400" />
-        <span>Run Full Google PageSpeed Insights Audit</span>
+        <span>Run External Google PageSpeed Insights Audit</span>
         <ExternalLink className="w-3.5 h-3.5 text-cyan-400 ml-1" />
       </a>
 
@@ -79,27 +93,29 @@ export const PageSpeedTab: React.FC<PageSpeedTabProps> = ({ pagespeed, url }) =>
         <div className="space-y-2.5 text-xs">
           <div className="flex justify-between items-center text-slate-300">
             <span className="text-slate-400">DNS Lookup:</span>
-            <span className="font-mono">{pagespeed.dnsTime} ms</span>
+            <span className="font-mono">{formatTiming(pagespeed.dnsTime)}</span>
           </div>
           <div className="flex justify-between items-center text-slate-300">
             <span className="text-slate-400">TCP Handshake:</span>
-            <span className="font-mono">{pagespeed.tcpTime} ms</span>
+            <span className="font-mono">{formatTiming(pagespeed.tcpTime)}</span>
           </div>
           <div className="flex justify-between items-center text-slate-300">
             <span className="text-slate-400">TLS Negotiation:</span>
-            <span className="font-mono">{pagespeed.tlsTime} ms</span>
+            <span className="font-mono">{formatTiming(pagespeed.tlsTime)}</span>
           </div>
           <div className="flex justify-between items-center text-slate-300">
             <span className="text-slate-400">Time to First Byte (TTFB):</span>
-            <span className="font-mono font-bold text-cyan-400">{pagespeed.ttfb} ms</span>
+            <span className={`font-mono font-bold ${pagespeed.ttfb >= 0 ? 'text-cyan-400' : 'text-slate-400'}`}>
+              {formatTiming(pagespeed.ttfb)}
+            </span>
           </div>
           <div className="flex justify-between items-center text-slate-300">
             <span className="text-slate-400">DOM Interactive:</span>
-            <span className="font-mono">{pagespeed.domInteractive} ms</span>
+            <span className="font-mono">{formatTiming(pagespeed.domInteractive)}</span>
           </div>
           <div className="flex justify-between items-center text-slate-300">
             <span className="text-slate-400">Complete Load Event:</span>
-            <span className="font-mono">{pagespeed.loadTime} ms</span>
+            <span className="font-mono">{formatTiming(pagespeed.loadTime)}</span>
           </div>
         </div>
       </Card>
@@ -119,6 +135,9 @@ export const PageSpeedTab: React.FC<PageSpeedTabProps> = ({ pagespeed, url }) =>
               <span className="font-mono text-cyan-300">{res.sizeKb} KB</span>
             </div>
           ))}
+          <p className="text-[10px] text-slate-500 pt-1 border-t border-slate-800/60 leading-normal">
+            *Note: Transfer size measures same-origin requests and cross-origin resources with Timing-Allow-Origin headers. Assets without TAO headers report 0 bytes to protect user privacy.
+          </p>
         </div>
       </Card>
     </div>

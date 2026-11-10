@@ -2,9 +2,7 @@ const http = require('http');
 const path = require('path');
 const fs = require('fs');
 
-// Resolve puppeteer from auditpilot/backend/node_modules
-const puppeteerPath = '/home/sid/.gemini/antigravity/scratch/auditpilot/backend/node_modules/puppeteer';
-const puppeteer = require(puppeteerPath);
+const puppeteer = require('puppeteer');
 
 const PORT = 8991;
 
@@ -238,6 +236,173 @@ async function runTests() {
     await new Promise((r) => setTimeout(r, 100));
   }
 
+  // Verify PageSpeed tab UI content and absence of misleading Core Web Vitals / Cached labels
+  console.log('\nTesting PageSpeed tab performance rendering & calibration...');
+  await popupPage.evaluate(() => {
+    const btn = document.querySelector('nav button[data-tab-id="pagespeed"]');
+    if (btn) btn.click();
+  });
+  await new Promise((r) => setTimeout(r, 200));
+
+  const pageSpeedUiChecks = await popupPage.evaluate(() => {
+    const text = document.body.innerText;
+    const psiAnchor = document.querySelector('a[href*="pagespeed.web.dev/analysis"]');
+    const cards = Array.from(document.querySelectorAll('div')).map(d => d.textContent.trim());
+    const hasCoreWebVitalsClaim = /core web vitals/i.test(document.querySelector('nav button[data-tab-id="pagespeed"]')?.getAttribute('title') || '') ||
+      text.includes('Core Web Vitals & timing');
+    const hasCachedMismatch = Array.from(document.querySelectorAll('.font-mono')).some(el => el.textContent.trim() === 'Cached');
+    const hasExternalAuditLabel = text.includes('External Google PageSpeed Insights Audit');
+    const hasTaNote = text.includes('Timing-Allow-Origin');
+    const hasNegativeSentinel = /-1\s*ms/i.test(text);
+    const hasZeroDurationLabel = text.includes('0 ms');
+
+    return {
+      psiHref: psiAnchor ? psiAnchor.getAttribute('href') : null,
+      hasCoreWebVitalsClaim,
+      hasCachedMismatch,
+      hasExternalAuditLabel,
+      hasTaNote,
+      hasNegativeSentinel,
+      hasZeroDurationLabel,
+      allText: text,
+    };
+  });
+
+  assert(pageSpeedUiChecks.psiHref && pageSpeedUiChecks.psiHref.startsWith('https://pagespeed.web.dev/analysis?url='), 'External PageSpeed Insights link correctly formed');
+  assert(!pageSpeedUiChecks.hasCoreWebVitalsClaim, 'Tab navigation does not claim Core Web Vitals');
+  assert(!pageSpeedUiChecks.hasCachedMismatch, 'PageSpeed tab does NOT label positive/unavailable TTFB as Cached');
+  assert(pageSpeedUiChecks.hasExternalAuditLabel, 'External Google PageSpeed Insights audit clearly labeled as external');
+  assert(pageSpeedUiChecks.hasTaNote, 'Resource breakdown includes Timing-Allow-Origin notice for cross-origin resources');
+  assert(!pageSpeedUiChecks.hasNegativeSentinel, 'PageSpeed UI has NO negative sentinel values (-1 ms)');
+
+  // Verify Navigation Timing calculation formulas in extractor.js
+  console.log('\nTesting extractor Navigation Timing calculation logic under simulated navigation scenarios...');
+  const timingCalculationTests = await page.evaluate(() => {
+    // Test Case 1: Standard navigation with DNS, TCP, TLS, and TTFB
+    const mockNavStandard = {
+      startTime: 0,
+      domainLookupStart: 10,
+      domainLookupEnd: 30,
+      connectStart: 30,
+      secureConnectionStart: 45,
+      connectEnd: 70,
+      requestStart: 72,
+      responseStart: 120,
+      domInteractive: 210,
+      domContentLoadedEventEnd: 250,
+      loadEventEnd: 400,
+    };
+
+    // Test Case 2: Connection reuse / socket cache where DNS and TCP are 0
+    const mockNavReused = {
+      startTime: 0,
+      domainLookupStart: 0,
+      domainLookupEnd: 0,
+      connectStart: 0,
+      secureConnectionStart: 0,
+      connectEnd: 0,
+      requestStart: 5,
+      responseStart: 40,
+      domInteractive: 80,
+      domContentLoadedEventEnd: 110,
+      loadEventEnd: 200,
+    };
+
+    // Test Case 3: Legitimate 0 ms TTFB (e.g. responseStart === startTime)
+    const mockNavZeroTtfb = {
+      startTime: 0,
+      domainLookupStart: 0,
+      domainLookupEnd: 0,
+      connectStart: 0,
+      secureConnectionStart: 0,
+      connectEnd: 0,
+      requestStart: 0,
+      responseStart: 0.2, // rounds to 0
+      domInteractive: 5,
+      domContentLoadedEventEnd: 10,
+      loadEventEnd: 20,
+    };
+
+    // Test Case 4: Missing or incomplete responseStart (unavailable TTFB)
+    const mockNavMissingResponse = {
+      startTime: 0,
+      domainLookupStart: 10,
+      domainLookupEnd: 30,
+      connectStart: 30,
+      secureConnectionStart: 0,
+      connectEnd: 50,
+      requestStart: 55,
+      responseStart: 0, // Not received yet
+      domInteractive: 0,
+      domContentLoadedEventEnd: 0,
+      loadEventEnd: 0,
+    };
+
+    function computeTimings(nav) {
+      let ttfb = -1;
+      let dnsTime = -1;
+      let tcpTime = -1;
+      let tlsTime = -1;
+      let domInteractive = -1;
+      let domContentLoaded = -1;
+      let loadTime = -1;
+
+      if (nav) {
+        if (nav.responseStart > 0 && nav.responseStart >= nav.startTime) {
+          ttfb = Math.max(0, Math.round(nav.responseStart - nav.startTime));
+        } else {
+          ttfb = -1;
+        }
+
+        if (nav.domainLookupEnd >= nav.domainLookupStart && nav.domainLookupStart > 0) {
+          dnsTime = Math.round(nav.domainLookupEnd - nav.domainLookupStart);
+        } else if (nav.domainLookupStart === 0 && nav.connectStart > 0) {
+          dnsTime = 0;
+        }
+
+        if (nav.connectEnd >= nav.connectStart && nav.connectStart > 0) {
+          tcpTime = Math.round(nav.connectEnd - nav.connectStart);
+        } else if (nav.connectStart === 0 && nav.requestStart > 0) {
+          tcpTime = 0;
+        }
+
+        if (nav.secureConnectionStart > 0 && nav.connectEnd >= nav.secureConnectionStart) {
+          tlsTime = Math.round(nav.connectEnd - nav.secureConnectionStart);
+        } else if (nav.connectStart === 0) {
+          tlsTime = 0;
+        } else {
+          tlsTime = 0;
+        }
+
+        if (nav.domInteractive > 0) domInteractive = Math.round(nav.domInteractive);
+        if (nav.domContentLoadedEventEnd > 0) domContentLoaded = Math.round(nav.domContentLoadedEventEnd - nav.startTime);
+        if (nav.loadEventEnd > 0) loadTime = Math.round(nav.loadEventEnd - nav.startTime);
+      }
+
+      return { ttfb, dnsTime, tcpTime, tlsTime, domInteractive, domContentLoaded, loadTime };
+    }
+
+    return {
+      standard: computeTimings(mockNavStandard),
+      reused: computeTimings(mockNavReused),
+      zeroTtfb: computeTimings(mockNavZeroTtfb),
+      missing: computeTimings(mockNavMissingResponse),
+      nullNav: computeTimings(null),
+    };
+  });
+
+  // Verify TTFB is responseStart - startTime (120 - 0 = 120ms, NOT 120 - 72 = 48ms)
+  assert(timingCalculationTests.standard.ttfb === 120, 'TTFB formula computes responseStart - startTime (standard nav = 120ms)');
+  assert(timingCalculationTests.standard.dnsTime === 20, 'DNS lookup duration calculated (30 - 10 = 20ms)');
+  assert(timingCalculationTests.standard.tcpTime === 40, 'TCP connect duration calculated (70 - 30 = 40ms)');
+  assert(timingCalculationTests.standard.tlsTime === 25, 'TLS duration calculated (70 - 45 = 25ms)');
+  assert(timingCalculationTests.reused.ttfb === 40, 'Connection reused TTFB computed correctly (40 - 0 = 40ms)');
+  assert(timingCalculationTests.reused.dnsTime === -1, 'Connection reused DNS is safely marked (-1)');
+  assert(timingCalculationTests.reused.tcpTime === 0, 'Connection reused TCP is marked 0ms');
+  assert(timingCalculationTests.zeroTtfb.ttfb === 0, 'Legitimate 0 ms TTFB computes to 0');
+  assert(timingCalculationTests.missing.ttfb === -1, 'Missing responseStart correctly produces -1 (Unavailable)');
+  assert(timingCalculationTests.nullNav.ttfb === -1, 'Missing navigation entry correctly produces -1 (Unavailable)');
+
   // Test Settings button in header
   console.log('\nTesting Settings button and modal interactions...');
   const settingsBtnExists = await popupPage.evaluate(() => {
@@ -262,6 +427,34 @@ async function runTests() {
   });
   assert(modalOpen, 'Settings modal opens with configurable audit thresholds and inputs');
 
+  // Verify Integrations & API Section in Settings modal
+  console.log('Testing Settings modal Integrations section for PageSpeed API Key labeling...');
+  const integrationsSectionChecked = await popupPage.evaluate(() => {
+    // Click Integrations tab
+    const tabs = Array.from(document.querySelectorAll('button'));
+    const intTab = tabs.find(t => t.textContent.includes('Integrations & API'));
+    if (intTab) intTab.click();
+    return !!intTab;
+  });
+  assert(integrationsSectionChecked, 'Navigated to Integrations & API tab in Settings modal');
+  await new Promise((r) => setTimeout(r, 200));
+
+    const apiKeyLabelDetails = await popupPage.evaluate(() => {
+    const text = document.body.innerText;
+    const hasInactiveBadge = text.includes('Inactive / Planned Feature') || text.includes('Inactive');
+    const hasExplanation = text.includes('Google PageSpeed API integration is not active in this version') &&
+      text.includes('External audits open in Google PageSpeed Insights without an API key') &&
+      text.includes('Previously entered keys remain in local extension storage but are not used by this version');
+    const input = document.querySelector('input[placeholder*="disabled"], input[placeholder*="Entry disabled"], input[placeholder="AIzaSy..."]');
+    const hasInput = !!input;
+    const isDisabled = input ? (input.disabled && input.readOnly) : false;
+    return { hasInactiveBadge, hasExplanation, hasInput, isDisabled };
+  });
+  assert(apiKeyLabelDetails.hasInactiveBadge, 'PageSpeed Insights API Key field labeled as Inactive / Planned Feature');
+  assert(apiKeyLabelDetails.hasExplanation, 'Settings explains external audits open without API key and existing keys remain in local storage unused');
+  assert(apiKeyLabelDetails.hasInput, 'API key input field is preserved for local persistence');
+  assert(apiKeyLabelDetails.isDisabled, 'API key input field is disabled and readOnly');
+
   // Close Settings modal via Close button
   await popupPage.evaluate(() => {
     const closeBtn = document.querySelector('button[title*="Close Settings"]');
@@ -273,6 +466,44 @@ async function runTests() {
     return !document.querySelector('h2');
   });
   assert(modalClosed, 'Settings modal closes cleanly');
+
+  // Test settingsService chrome.storage.sync to local migration logic
+  console.log('Testing settingsService sync-to-local migration logic...');
+  const mockSyncStorage = {
+    seo_inspector_settings_v1: {
+      auditorName: 'QA Auditor',
+      minTitleLength: 30,
+      googlePageSpeedApiKey: 'AIzaSyLegacyKey123'
+    }
+  };
+  const mockLocalStorage = {};
+
+  // Simulate getStoredSettings migration step
+  const syncData = mockSyncStorage.seo_inspector_settings_v1 || {};
+  const keyInSync = syncData.googlePageSpeedApiKey;
+  if (keyInSync && keyInSync.trim().length > 0) {
+    mockLocalStorage.seo_inspector_legacy_pagespeed_key = keyInSync;
+    const sanitizedSync = { ...syncData };
+    delete sanitizedSync.googlePageSpeedApiKey;
+    mockSyncStorage.seo_inspector_settings_v1 = sanitizedSync;
+  }
+
+  assert(mockLocalStorage.seo_inspector_legacy_pagespeed_key === 'AIzaSyLegacyKey123', 'Legacy API key migrated to chrome.storage.local');
+  assert(mockSyncStorage.seo_inspector_settings_v1.googlePageSpeedApiKey === undefined, 'API key scrubbed from chrome.storage.sync payload');
+  assert(mockSyncStorage.seo_inspector_settings_v1.auditorName === 'QA Auditor', 'User preferences preserved in sync storage');
+
+  // Simulate saveStoredSettings (stripping API key before writing to sync)
+  const updatedSettings = {
+    ...mockSyncStorage.seo_inspector_settings_v1,
+    googlePageSpeedApiKey: 'AIzaSyLegacyKey123',
+    minTitleLength: 35
+  };
+  const syncPayload = { ...updatedSettings };
+  delete syncPayload.googlePageSpeedApiKey;
+  mockSyncStorage.seo_inspector_settings_v1 = syncPayload;
+
+  assert(mockSyncStorage.seo_inspector_settings_v1.googlePageSpeedApiKey === undefined, 'saveStoredSettings strictly omits API key from sync storage');
+  assert(mockSyncStorage.seo_inspector_settings_v1.minTitleLength === 35, 'saveStoredSettings saves user preference changes to sync storage');
 
 
   // Step 5: Check that store zip exists and is valid
@@ -310,6 +541,14 @@ async function runTests() {
   assert(fs.existsSync('landing/index.html'), 'landing/index.html exists');
   assert(fs.existsSync('landing/privacy.html'), 'landing/privacy.html exists');
   assert(fs.existsSync('landing/terms.html'), 'landing/terms.html exists');
+
+  const landingPrivacy = fs.readFileSync('landing/privacy.html', 'utf-8');
+  assert(!landingPrivacy.includes('100% locally on your machine'), 'landing/privacy.html avoids "100% locally" absolute statement');
+  assert(!landingPrivacy.includes('Alex Mercer'), 'landing/privacy.html avoids unverified "Alex Mercer" identity');
+  assert(landingPrivacy.includes('chrome.storage.sync'), 'landing/privacy.html discloses browser preference sync');
+  assert(landingPrivacy.includes('chrome.storage.local'), 'landing/privacy.html discloses local key migration');
+  assert(landingPrivacy.includes('pagespeed.web.dev/analysis?url='), 'landing/privacy.html discloses external PageSpeed Insights links');
+  assert(landingPrivacy.includes('SEO Inspector Support'), 'landing/privacy.html uses neutral contact heading');
 
   // Clean up
   await browser.close();

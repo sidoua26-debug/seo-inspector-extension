@@ -356,28 +356,30 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <div className="bg-slate-800/40 border border-slate-700/60 rounded-xl p-3.5 space-y-3">
                 <h3 className="font-semibold text-slate-200 flex items-center gap-2">
                   <Key className="w-4 h-4 text-cyan-400" />
-                  <span>Google PageSpeed Insights API Key (Optional)</span>
+                  <span>Google PageSpeed Insights API Key (Inactive / Planned Feature)</span>
                 </h3>
                 <p className="text-[11px] text-slate-400">
-                  By default, Core Web Vitals use client-side Performance API. Providing a PageSpeed
-                  API key enables Google cloud-run synthetic audits with elevated quotas.
+                  Google PageSpeed API integration is not active in this version. External audits open in Google PageSpeed Insights without an API key. Previously entered keys remain in local extension storage but are not used by this version.
                 </p>
 
                 <div className="relative">
                   <input
                     type={showApiKey ? 'text' : 'password'}
-                    placeholder="AIzaSy..."
+                    placeholder="Entry disabled (integration inactive)"
                     value={formData.googlePageSpeedApiKey || ''}
-                    onChange={(e) => handleChange('googlePageSpeedApiKey', e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-cyan-500 font-mono pr-20"
+                    disabled
+                    readOnly
+                    className="w-full bg-slate-950/70 border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-400 focus:outline-none font-mono pr-20 cursor-not-allowed opacity-80"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowApiKey(!showApiKey)}
-                    className="absolute right-2 top-1.5 text-[11px] text-slate-400 hover:text-slate-200 px-1.5 py-0.5"
-                  >
-                    {showApiKey ? 'Hide' : 'Reveal'}
-                  </button>
+                  {formData.googlePageSpeedApiKey && (
+                    <button
+                      type="button"
+                      onClick={() => setShowApiKey(!showApiKey)}
+                      className="absolute right-2 top-1.5 text-[11px] text-slate-400 hover:text-slate-200 px-1.5 py-0.5"
+                    >
+                      {showApiKey ? 'Hide' : 'Reveal'}
+                    </button>
+                  )}
                 </div>
 
                 <div className="pt-2 border-t border-slate-800/80">
@@ -409,7 +411,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
                   <div className="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">
                     <span className="text-slate-500 block text-[10px] uppercase">Engine Version</span>
-                    <span className="text-cyan-400 font-bold">1.0.0 (Production)</span>
+                    <span className="text-cyan-400 font-bold">1.0.1 (Production)</span>
                   </div>
 
                   <div className="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800">

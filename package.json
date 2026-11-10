@@ -1,6 +1,6 @@
 {
   "name": "seo-inspector-extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "On-Page Technical SEO Inspector Chrome Extension (Manifest V3)",
   "type": "module",
   "scripts": {
@@ -26,6 +26,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.3",
+    "puppeteer": "24.43.1",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.2",
     "vite": "^6.2.0"
